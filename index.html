@@ -72,21 +72,6 @@ function getCookie(name) {
 
     return null;
 }
-
-const marketingConsentCheckIntervalId = setInterval(() => {
-  if (JSON.parse(getCookie('SEBConsents'))?.consents) {
-    marketingConsentIsGiven = JSON.parse(getCookie('SEBConsents')).consents.marketing == true;
-  } else {
-    marketingConsentIsGiven = false;
-  }
-  
-
-  if (marketingConsentIsGiven) {
-    grantMarketingConsent();
-  } else {
-    denyMarketingConsent();
-  }  
-}, 10000);
     </script>
 </body>
 </html>
