@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        console.log('consent v0251');
+
+window.myTrackingData = window.myTrackingData || [];
+let marketingConsentIsGiven = false;
+
+if (JSON.parse(getCookie('SEBConsents'))?.consents) {
+  marketingConsentIsGiven = JSON.parse(getCookie('SEBConsents')).consents.marketing == true;
+} else {
+    marketingConsentIsGiven = false;
+}
+
+const headerTag = document.querySelector('head');
+const gtagScript = document.createElement('script');
+gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-1FD52C62FH&l=myTrackingData';
+headerTag.appendChild(gtagScript);
+
+if (marketingConsentIsGiven) {
+  grantMarketingConsent();
+} else {
+  denyMarketingConsent();
+}
+
+
+function gtag() { 
+  myTrackingData.push(arguments); 
+}
+
+gtag('js', new Date());
+gtag('config', 'G-1FD52C62FH');
+
+function grantMarketingConsent() {
+  gtag('consent', 'update', {
+    'ad_user_data': 'granted',
+    'ad_personalization': 'granted',
+    'ad_storage': 'granted',
+    // 'analytics_storage': 'granted'
+  });
+  console.log('111 granted')
+}
+
+function denyMarketingConsent() {
+  gtag('consent', 'update', {
+    'ad_user_data': 'denied',
+    'ad_personalization': 'denied',
+    'ad_storage': 'denied',
+    // 'analytics_storage': 'denied'
+  });
+  console.log('111 denied')
+}
+
+function getCookie(name) {
+    const cookies = document.cookie.split(';');
+
+    for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+
+        if (cookie.startsWith(encodeURIComponent(name) + '=')) {
+            const value = cookie.substring(encodeURIComponent(name).length + 1);
+            
+            return decodeURIComponent(value);
+        }
+    }
+
+    return null;
+}
+
+const marketingConsentCheckIntervalId = setInterval(() => {
+  if (JSON.parse(getCookie('SEBConsents'))?.consents) {
+    marketingConsentIsGiven = JSON.parse(getCookie('SEBConsents')).consents.marketing == true;
+  } else {
+    marketingConsentIsGiven = false;
+  }
+  
+
+  if (marketingConsentIsGiven) {
+    grantMarketingConsent();
+  } else {
+    denyMarketingConsent();
+  }  
+}, 10000);
+    </script>
+</body>
+</html>
